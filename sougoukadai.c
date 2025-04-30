@@ -102,10 +102,18 @@ float correct_rate_fc(int train_count, const float *A, const float *b, const flo
 
 void softmaxwithloss_bwd(int n, const float *y, unsigned char t, float *dEdx)
 {
-    for (int i = 0; i < n; i++)
-    {
-        dEdx[i] = y[i] - t[i];
-    }
+    dEdx[n] = y[n] - t;
+}
+
+void relu_bwd(int n, const float *x, const float *dEdy, float *dEdx)
+{
+    dEdx[n] = (x[n] > 0 ? dEdy[n] : 0);
+}
+
+void fc_bwd(int m, int n, const float *x, const float *dEdy, const float *A,
+            float *dEdA, float *dEdb, float *dEdx)
+{
+    dEdA[m]=dEdy[m]*
 }
 
 // テスト
@@ -129,11 +137,6 @@ int main()
 
     float correct_rate = correct_rate_fc(train_count, A_784x10, b_784x10, train_x, train_y, width, height);
     printf("%.2f%%\n", correct_rate);
-
-    // 画像の出力
-    // int i = 0;
-    // save_mnist_bmp(train_x + 784 * i, "train_%05d.bmp", i);
-    // return 0;
 
     return 0;
 }
